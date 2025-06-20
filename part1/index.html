@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dog Walking Service - Dog of the Day</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body { background: linear-gradient(45deg, #ff0, #0ff, #f0f, #fff); font-family: Comic Sans MS, cursive; }
+    .container { margin: 50px; padding: 40px; border: 5px dashed red; }
+    .dog-img { width: 300px; height: 300px; border-radius: 50%; border: 10px solid lime; animation: spin 2s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .details { font-size: 2em; color: #f00; background: #0f0; padding: 20px; margin-top: 30px; }
+    .actions { margin-top: 40px; }
+    .actions button { font-size: 2em; padding: 30px 60px; margin: 20px; background: #ff0; border: 5px solid #00f; }
+    .low-contrast { color: #eee; background: #fff; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1 tabindex="0">Dog of the Day!!! 🐶🐾🐕</h1>
+      <img :src="dogImg" class="dog-img" alt="">
+      <div class="details low-contrast">
+        Name: {{ dogName }}<br>
+        Breed: {{ dogBreed }}<br>
+        Age: {{ dogAge }}<br>
+        <span style="font-size:0.5em;">(Try to read this!)</span>
+      </div>
+      <div class="actions">
+        <button @click="fetchDog" aria-label="">CLICK HERE TO GET ANOTHER DOG PICTURE!!!</button>
+        <button @click="fetchDog" aria-label="">OR HERE!!!</button>
+        <button @click="fetchDog" aria-label="">OR EVEN HERE!!!</button>
+      </div>
+      <div style="margin-top:50px;">
+        <div>Dog walking is fun! Dog walking is fun! Dog walking is fun! Dog walking is fun! Dog walking is fun!</div>
+        <div>Dog walking is fun! Dog walking is fun! Dog walking is fun! Dog walking is fun! Dog walking is fun!</div>
+        <div>Dog walking is fun! Dog walking is fun! Dog walking is fun! Dog walking is fun! Dog walking is fun!</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          dogImg: '',
+          dogName: 'Barky McBarkface',
+          dogBreed: 'Unknown',
+          dogAge: '???'
+        }
+      },
+      mounted() {
+        this.fetchDog();
+      },
+      methods: {
+        fetchDog() {
+          fetch('https://dog.ceo/api/breeds/image/random')
+            .then(res => res.json())
+            .then(data => { this.dogImg = data.message; });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

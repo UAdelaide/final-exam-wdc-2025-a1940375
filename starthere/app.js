@@ -15,18 +15,20 @@ let db;
 
 (async () => {
   try {
-    // Connect to MySQL without specifying a database
+    console.log("⏳ Connecting to MySQL server...");
+
     const connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '' // Set your MySQL root password
+      password: ''
     });
 
-    // Create the database if it doesn't exist
+    console.log("✅ Connected to MySQL.");
+
     await connection.query('CREATE DATABASE IF NOT EXISTS testdb');
     await connection.end();
 
-    // Now connect to the created database
+    console.log("⏳ Connecting to testdb...");
     db = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
@@ -34,18 +36,19 @@ let db;
       database: 'testdb'
     });
 
-    // Create a table if it doesn't exist
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS books (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        title VARCHAR(255),
-        author VARCHAR(255)
-      )
-    `);
+    console.log("✅ Connected to testdb.");
 
-    // Insert data if table is empty
+    await db.execute(`CREATE TABLE IF NOT EXISTS books (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      title VARCHAR(255),
+      author VARCHAR(255)
+    )`);
+
+    console.log("✅ Table created or exists.");
+
     const [rows] = await db.execute('SELECT COUNT(*) AS count FROM books');
     if (rows[0].count === 0) {
+      console.log("📥 Inserting books...");
       await db.execute(`
         INSERT INTO books (title, author) VALUES
         ('1984', 'George Orwell'),
@@ -53,10 +56,13 @@ let db;
         ('Brave New World', 'Aldous Huxley')
       `);
     }
+
+    console.log("✅ Database setup complete.");
   } catch (err) {
-    console.error('Error setting up database. Ensure Mysql is running: service mysql start', err);
+    console.error('❌ Error setting up database.', err);
   }
 })();
+
 
 // Route to return books as JSON
 app.get('/', async (req, res) => {
